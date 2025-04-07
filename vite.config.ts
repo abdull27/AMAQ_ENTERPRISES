@@ -7,4 +7,5 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  base: '/amaq-enterprise/', // Add this line - replace with your repo name
 });
