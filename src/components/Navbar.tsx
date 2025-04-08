@@ -2,13 +2,25 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ShoppingCart, Menu, User } from 'lucide-react';
 import CartDrawer from './CartDrawer';
+import AuthModal from './AuthModal';
 import { useCartStore } from '../stores/cartStore';
+import { useAuthStore } from '../stores/authStore';
 
 const Navbar = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const items = useCartStore((state) => state.items);
+  const { user, signOut } = useAuthStore();
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+
+  const handleAuthClick = () => {
+    if (user) {
+      signOut();
+    } else {
+      setIsAuthOpen(true);
+    }
+  };
 
   return (
     <>
@@ -41,8 +53,12 @@ const Navbar = () => {
               <Link to="/products" className="text-gray-600 hover:text-blue-600">Products</Link>
               <Link to="/about" className="text-gray-600 hover:text-blue-600">About</Link>
               <Link to="/contact" className="text-gray-600 hover:text-blue-600">Contact</Link>
-              <button className="text-gray-600 hover:text-blue-600">
+              <button 
+                className="text-gray-600 hover:text-blue-600 flex items-center gap-2"
+                onClick={handleAuthClick}
+              >
                 <User size={24} />
+                {user && <span className="text-sm">Sign Out</span>}
               </button>
               <button 
                 className="text-gray-600 hover:text-blue-600 relative"
@@ -67,8 +83,9 @@ const Navbar = () => {
       </nav>
 
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </>
   );
 };
 
-export default Navbar;
+export default Navbar
